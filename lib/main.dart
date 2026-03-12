@@ -44,7 +44,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             // optionally reset expression
           }
         } catch (e) {
-          _result = 'Error';
+          if (e.toString().contains('Tidak Bisa di Angka 0')) {
+            _result = 'Tidak Bisa di Bagi Angka 0';
+          } else {
+            _result = 'Error';
+          }
         }
       } else {
         if (_result != '0' && _result != 'Error' && _expression.isEmpty) {
@@ -122,8 +126,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         double b = double.parse(tokens[i + 1]);
         double res = 0;
         if (tokens[i] == '*') res = a * b;
-        if (tokens[i] == '/') res = a / b;
-        if (tokens[i] == 'mod') res = a % b;
+        if (tokens[i] == '/') {
+          if (b == 0) throw Exception('tidak bisa di bagi 0');
+          res = a / b;
+        }
+        if (tokens[i] == 'mod') {
+          if (b == 0) throw Exception('tidak bisa di bagi 0');
+          res = a % b;
+        }
         tokens.replaceRange(i - 1, i + 2, [res.toString()]);
         i -= 2; // adjust index
       }
@@ -334,7 +344,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     children: [
                       _buildButton('7'),
                       _buildButton('8'),
-                      _buildButton('9'),
+                      _buildButton('9', bgColor: Colors.red, textColor: Colors.black),n
                       _buildButton('x'),
                     ],
                   ),
